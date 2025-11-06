@@ -12,7 +12,7 @@ test("GET to /api/v1/status should return status 200", async () => {
   expect(responseBody).toHaveProperty("updated_at");
   expect(new Date(responseBody.updated_at).toString()).not.toBe("Invalid Date");
   expect(responseBody.updated_at).toBe(
-    new Date(responseBody.updated_at).toISOString(),
+    new Date(responseBody.updated_at).toISOString()
   );
 
   expect(responseBody.dependencies.database.version).toBe("16.0");
