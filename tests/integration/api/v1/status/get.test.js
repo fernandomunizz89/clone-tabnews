@@ -4,18 +4,20 @@ beforeAll(async () => {
   await orchestrator.waitForAllServices();
 });
 
-test("GET to /api/v1/status should return status 200", async () => {
-  const res = await fetch("http://localhost:3000/api/v1/status");
-  expect(res.status).toBe(200);
+describe("GET /api/v1/status", () => {
+  describe("Anonymous user", () => {
+    test("Retrieving current system status", async () => {
+      const response = await fetch("http://localhost:3000/api/v1/status");
+      expect(response.status).toBe(200);
 
-  const responseBody = await res.json();
-  expect(responseBody).toHaveProperty("updated_at");
-  expect(new Date(responseBody.updated_at).toString()).not.toBe("Invalid Date");
-  expect(responseBody.updated_at).toBe(
-    new Date(responseBody.updated_at).toISOString()
-  );
+      const responseBody = await response.json();
 
-  expect(responseBody.dependencies.database.version).toBe("16.0");
-  expect(responseBody.dependencies.database.max_connections).toEqual(100);
-  expect(responseBody.dependencies.database.current_connections).toEqual(1);
+      const parsedUpdatedAt = new Date(responseBody.updated_at).toISOString();
+      expect(responseBody.updated_at).toEqual(parsedUpdatedAt);
+
+      expect(responseBody.dependencies.database.version).toEqual("16.0");
+      expect(responseBody.dependencies.database.max_connections).toEqual(100);
+      expect(responseBody.dependencies.database.current_connections).toEqual(1);
+    });
+  });
 });
